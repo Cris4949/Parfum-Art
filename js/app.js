@@ -105,8 +105,8 @@ function renderPriceChips() {
 
 function estiloChip(activo) {
   return activo
-    ? "px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wide bg-gris-900 text-white transition-all"
-    : "px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wide bg-white border border-gris-300 text-gris-600 hover:border-gris-500 transition-all";
+    ? "px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wide bg-gradient-to-br from-acento-500 to-acento-600 text-white shadow-sm shadow-acento-500/30 transition-all"
+    : "px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wide bg-white border border-gris-300 text-gris-600 hover:border-acento-400 hover:text-acento-600 transition-all";
 }
 
 function getFilteredSorted() {
@@ -134,7 +134,7 @@ function getFilteredSorted() {
 
 function buildCardPerfume(p, index) {
   const card = document.createElement("div");
-  card.className = "card-enter group relative bg-white rounded-xl border border-gris-200 overflow-hidden shadow-sm transition-all duration-300 hover:border-gris-400 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between";
+  card.className = "card-enter group relative bg-white rounded-2xl border border-gris-200 overflow-hidden shadow-sm transition-all duration-300 hover:border-acento-300 hover:shadow-xl hover:shadow-acento-500/10 hover:-translate-y-1 flex flex-col justify-between";
   card.style.animationDelay = (index * 30) + "ms";
 
   const mensaje = `Hola Parfum Art, me interesa adquirir el perfume "${p.nombre}" con el precio de ${fmtQ(p.precio)}. ¿Tienen disponibilidad para coordinar la entrega?`;
@@ -142,10 +142,10 @@ function buildCardPerfume(p, index) {
 
   card.innerHTML = `
     <div>
-      <div class="absolute top-3 left-3 z-10 bg-gris-900/90 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold text-white">
+      <div class="absolute top-3 left-3 z-10 bg-gradient-to-br from-acento-500 to-acento-600 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold text-white shadow-sm">
         ${p.marca}
       </div>
-      <div class="h-56 sm:h-64 bg-gris-100 relative flex items-center justify-center p-5 overflow-hidden border-b border-gris-200">
+      <div class="h-56 sm:h-64 bg-gris-50 relative flex items-center justify-center p-5 overflow-hidden border-b border-gris-200">
         <img src="${p.imagen}" alt="${p.nombre}" loading="lazy" width="300" height="300"
              class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
              onerror="handleImageError(this)">
@@ -164,10 +164,10 @@ function buildCardPerfume(p, index) {
     <div class="px-5 sm:px-6 pb-5 sm:pb-6 pt-2 border-t border-gris-200 flex items-center justify-between gap-3">
       <div>
         <span class="text-xs text-gris-500 uppercase block tracking-wider">Precio</span>
-        <span class="text-xl sm:text-2xl font-serif font-bold text-gris-900">${fmtQ(p.precio)}</span>
+        <span class="text-xl sm:text-2xl font-serif font-bold text-acento-600">${fmtQ(p.precio)}</span>
       </div>
       <a href="${url}" target="_blank" rel="noopener" data-pedir-id="${p.id}"
-         class="bg-[#25D366] hover:bg-[#1EBE57] text-white font-bold px-4 py-3 rounded-lg text-xs transition-all flex items-center gap-1.5 uppercase tracking-wide shrink-0 min-h-[44px]">
+         class="bg-[#25D366] hover:bg-[#1EBE57] text-white font-bold px-4 py-3 rounded-lg text-xs transition-all flex items-center gap-1.5 uppercase tracking-wide shrink-0 min-h-[44px] shadow-sm hover:shadow-md">
         <i class="fa-brands fa-whatsapp text-sm"></i> Pedir
       </a>
     </div>
@@ -182,7 +182,7 @@ function buildCardPerfume(p, index) {
 
 function buildCardSkincare(p, index) {
   const card = document.createElement("div");
-  card.className = "card-enter group relative bg-white rounded-xl border border-dashed border-gris-300 overflow-hidden shadow-sm transition-all duration-300 hover:border-gris-500 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between";
+  card.className = "card-enter group relative bg-white rounded-2xl border border-dashed border-gris-300 overflow-hidden shadow-sm transition-all duration-300 hover:border-acento-400 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between";
   card.style.animationDelay = (index * 30) + "ms";
 
   card.innerHTML = `
@@ -190,11 +190,11 @@ function buildCardSkincare(p, index) {
       <div class="absolute top-3 left-3 z-10 bg-gris-900/90 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold text-white">
         ${p.categoria}
       </div>
-      <div class="absolute top-3 right-3 z-10 bg-white border border-gris-400 text-gris-700 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold">
+      <div class="absolute top-3 right-3 z-10 bg-white border border-acento-400 text-acento-600 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold">
         Muestra
       </div>
-      <div class="h-56 sm:h-64 bg-gradient-to-br from-gris-200 to-gris-100 relative flex items-center justify-center p-5 overflow-hidden border-b border-gris-200">
-        <i class="fa-solid ${p.icono} text-6xl sm:text-7xl text-gris-400"></i>
+      <div class="h-56 sm:h-64 bg-gradient-to-br from-gris-100 to-acento-50 relative flex items-center justify-center p-5 overflow-hidden border-b border-gris-200">
+        <i class="fa-solid ${p.icono} text-6xl sm:text-7xl text-acento-300"></i>
       </div>
       <div class="p-5 sm:p-6 space-y-3">
         <h4 class="font-serif text-lg sm:text-xl font-bold text-gris-900 leading-snug">
@@ -209,7 +209,7 @@ function buildCardSkincare(p, index) {
     <div class="px-5 sm:px-6 pb-5 sm:pb-6 pt-2 border-t border-gris-200 flex items-center justify-between gap-3">
       <div>
         <span class="text-xs text-gris-500 uppercase block tracking-wider">Precio referencial</span>
-        <span class="text-xl sm:text-2xl font-serif font-bold text-gris-900">${fmtQ(p.precio)}</span>
+        <span class="text-xl sm:text-2xl font-serif font-bold text-acento-600">${fmtQ(p.precio)}</span>
       </div>
       <button type="button" disabled title="Producto de muestra — próximamente disponible"
          class="bg-gris-100 text-gris-400 font-bold px-4 py-3 rounded-lg text-xs flex items-center gap-1.5 uppercase tracking-wide shrink-0 min-h-[44px] cursor-not-allowed">
@@ -247,11 +247,11 @@ function renderCatalogo() {
 
 function handleImageError(imageElement) {
   const parent = imageElement.parentElement;
-  parent.className = "h-56 sm:h-64 bg-gris-100 relative flex items-center justify-center p-6 overflow-hidden border-b border-gris-200";
+  parent.className = "h-56 sm:h-64 bg-gris-50 relative flex items-center justify-center p-6 overflow-hidden border-b border-gris-200";
   parent.innerHTML = `
-    <div class="text-center text-gris-400">
+    <div class="text-center text-acento-400">
       <i class="fa-solid fa-droplet text-5xl mb-2 block"></i>
-      <span class="text-xs uppercase tracking-wider">Parfum Art</span>
+      <span class="text-xs uppercase tracking-wider text-gris-500">Parfum Art</span>
     </div>
   `;
 }
@@ -264,8 +264,8 @@ function actualizarUISeccion() {
   gridSubtitle.textContent = cfg.subtituloGrid;
   skincareNotice.classList.toggle("hidden", seccionActiva !== "skincare");
 
-  const activo = "flex-1 py-3.5 px-4 rounded-lg text-sm sm:text-base font-bold uppercase tracking-wide transition-all bg-gris-900 text-white shadow-md";
-  const inactivo = "flex-1 py-3.5 px-4 rounded-lg text-sm sm:text-base font-bold uppercase tracking-wide transition-all bg-transparent text-gris-500 hover:text-gris-900";
+  const activo = "flex-1 py-3.5 px-4 rounded-xl text-sm sm:text-base font-bold uppercase tracking-wide transition-all bg-gradient-to-br from-acento-500 to-acento-600 text-white shadow-md shadow-acento-500/30";
+  const inactivo = "flex-1 py-3.5 px-4 rounded-xl text-sm sm:text-base font-bold uppercase tracking-wide transition-all bg-transparent text-gris-500 hover:text-gris-900";
   tabPerfumeria.className = seccionActiva === "perfumeria" ? activo : inactivo;
   tabSkincare.className = seccionActiva === "skincare" ? activo : inactivo;
 }
@@ -282,6 +282,111 @@ function cambiarSeccion(nuevaSeccion) {
   // Al cambiar de sección, sube el scroll hasta el inicio del catálogo
   // para que la persona no tenga que desplazarse manualmente.
   document.getElementById("catalogo").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ============================================================
+// CARRUSEL DE DESTACADOS
+// Selección fija de IDs representativos de distintas casas, para
+// mostrar variedad. Se puede cambiar esta lista en cualquier momento.
+// ============================================================
+const IDS_DESTACADOS = [65, 32, 9, 23, 25, 47];
+
+function buildCarousel() {
+  const track = document.getElementById("carouselTrack");
+  const dotsContainer = document.getElementById("carouselDots");
+  if (!track || !dotsContainer) return;
+
+  const destacados = IDS_DESTACADOS
+    .map(id => PERFUMES.find(p => p.id === id))
+    .filter(Boolean);
+  if (destacados.length === 0) return;
+
+  destacados.forEach((p, i) => {
+    const mensaje = `Hola Parfum Art, me interesa adquirir el perfume "${p.nombre}" con el precio de ${fmtQ(p.precio)}. ¿Tienen disponibilidad para coordinar la entrega?`;
+    const slide = document.createElement("div");
+    slide.className = "carousel-slide";
+    slide.innerHTML = `
+      <img src="${p.imagen}" alt="${p.nombre}" class="w-full h-full object-cover" loading="${i === 0 ? "eager" : "lazy"}">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
+        <span class="text-acento-300 text-xs uppercase tracking-widest font-semibold">${p.marca}</span>
+        <h4 class="font-serif text-2xl sm:text-4xl font-bold text-white mt-1 leading-tight">${p.nombre}</h4>
+        <p class="text-gris-300 text-sm mt-1.5 max-w-md hidden sm:block font-light">${p.aroma}</p>
+        <div class="flex items-center gap-4 mt-4 sm:mt-5">
+          <span class="text-xl sm:text-2xl font-serif font-bold text-white">${fmtQ(p.precio)}</span>
+          <a href="${whatsappLink(mensaje)}" target="_blank" rel="noopener" data-carousel-pedir="${p.id}"
+             class="bg-white text-gris-900 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide hover:bg-gris-100 transition-all min-h-[40px] flex items-center">
+            Pedir
+          </a>
+        </div>
+      </div>
+    `;
+    track.appendChild(slide);
+
+    const dot = document.createElement("button");
+    dot.type = "button";
+    dot.className = "carousel-dot" + (i === 0 ? " active" : "");
+    dot.setAttribute("aria-label", `Ir a la imagen ${i + 1}`);
+    dot.addEventListener("click", () => irASlide(i));
+    dotsContainer.appendChild(dot);
+  });
+
+  destacados.forEach(p => {
+    const boton = track.querySelector(`[data-carousel-pedir="${p.id}"]`);
+    if (boton) boton.addEventListener("click", () => registrarClickPedido(p.nombre, p.marca, p.precio, "carrusel"));
+  });
+
+  const dots = () => Array.from(dotsContainer.querySelectorAll(".carousel-dot"));
+
+  function irASlide(index) {
+    const clamped = (index + destacados.length) % destacados.length;
+    track.scrollTo({ left: clamped * track.clientWidth, behavior: "smooth" });
+  }
+
+  function actualizarDotActivo() {
+    const index = Math.round(track.scrollLeft / track.clientWidth);
+    dots().forEach((d, i) => d.classList.toggle("active", i === index));
+    return index;
+  }
+
+  let indiceActual = 0;
+  let autoplayTimer = null;
+
+  function iniciarAutoplay() {
+    detenerAutoplay();
+    autoplayTimer = setInterval(() => {
+      indiceActual = (indiceActual + 1) % destacados.length;
+      irASlide(indiceActual);
+    }, 5000);
+  }
+  function detenerAutoplay() {
+    if (autoplayTimer) clearInterval(autoplayTimer);
+  }
+  function pausarYReanudar() {
+    detenerAutoplay();
+    setTimeout(iniciarAutoplay, 8000);
+  }
+
+  track.addEventListener("scroll", () => {
+    indiceActual = actualizarDotActivo();
+  }, { passive: true });
+
+  ["touchstart", "mousedown"].forEach(evt => {
+    track.addEventListener(evt, pausarYReanudar, { passive: true });
+  });
+
+  document.getElementById("carouselPrev").addEventListener("click", () => {
+    indiceActual = (indiceActual - 1 + destacados.length) % destacados.length;
+    irASlide(indiceActual);
+    pausarYReanudar();
+  });
+  document.getElementById("carouselNext").addEventListener("click", () => {
+    indiceActual = (indiceActual + 1) % destacados.length;
+    irASlide(indiceActual);
+    pausarYReanudar();
+  });
+
+  iniciarAutoplay();
 }
 
 // Eventos
@@ -302,4 +407,5 @@ tabSkincare.addEventListener("click", () => cambiarSeccion("skincare"));
 actualizarUISeccion();
 populateGroupFilter();
 renderPriceChips();
+buildCarousel();
 window.onload = renderCatalogo;
