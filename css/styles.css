@@ -1,0 +1,47 @@
+/* ============================================================
+   ESTILOS PERSONALIZADOS — Parfum Art
+   Todo lo que Tailwind no cubre con clases utilitarias vive aquí.
+   ============================================================ */
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #F2F2EF; }
+::-webkit-scrollbar-thumb { background: #B8B8B2; border-radius: 4px; }
+
+/* Texto con leve realce metálico, usado con moderación en títulos grandes */
+.gold-shimmer {
+  background: linear-gradient(135deg, #2B2B26 0%, #5C5C54 40%, #1A1A16 70%, #2B2B26 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card-enter {
+  animation: cardIn .45s ease both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+input:focus-visible, select:focus-visible, a:focus-visible, button:focus-visible {
+  outline: 2px solid #C9A227;
+  outline-offset: 2px;
+}
+
+/* Botón flotante de WhatsApp — pensado para pulgar en celular */
+.whatsapp-float {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 50;
+  width: 56px;
+  height: 56px;
+}
+@media (min-width: 768px) {
+  .whatsapp-float { display: none; } /* en escritorio ya está el botón del header */
+}
+
+/* Asegura tamaño mínimo de zona táctil recomendado (44px) en controles clave */
+.tap-target {
+  min-height: 44px;
+}
