@@ -35,6 +35,20 @@
                             800: '#2B2B26',
                             900: '#1A1A16',
                             950: '#0D0D0A'
+                        },
+                        // Acento plata/grafito — variación fría dentro de la misma familia de
+                        // grises, usada con moderación (precios, botones activos, detalles).
+                        acento: {
+                            50: '#F7F7F8',
+                            100: '#ECEDEF',
+                            200: '#D7D9DC',
+                            300: '#B8BCC2',
+                            400: '#9499A1',
+                            500: '#71767F',
+                            600: '#565A62',
+                            700: '#3F4247',
+                            800: '#2A2C2F',
+                            900: '#18191B'
                         }
                     },
                     fontFamily: {
@@ -51,23 +65,25 @@
 <body class="bg-white text-gris-800 min-h-screen font-sans overflow-x-hidden">
 
     <!-- HEADER -->
-    <header class="border-b border-gris-200 bg-white/95 backdrop-blur-md sticky top-0 z-50 py-3 px-4 sm:px-6">
+    <header class="border-b border-gris-200 bg-white/90 backdrop-blur-md sticky top-0 z-50 py-3 px-4 sm:px-6 shadow-sm">
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-3">
             <div class="flex items-center gap-3">
-                <img src="assets/logo.png" alt="Parfum Art" class="h-10 sm:h-12 w-auto">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gris-100 border-2 border-gris-300 shadow-sm overflow-hidden flex items-center justify-center shrink-0">
+                    <img src="assets/logo-round.png" alt="Parfum Art" class="w-full h-full object-cover">
+                </div>
             </div>
 
             <div class="flex items-center gap-2">
                 <a href="https://www.instagram.com/parfumartgt?igsh=dnh2NG03aW44ejhr" target="_blank" rel="noopener"
-                   class="hidden sm:flex w-9 h-9 rounded-full border border-gris-300 items-center justify-center text-gris-700 hover:bg-gris-900 hover:text-white hover:border-gris-900 transition-all">
+                   class="hidden sm:flex w-9 h-9 rounded-full border border-gris-300 items-center justify-center text-gris-700 hover:bg-acento-500 hover:text-white hover:border-acento-500 transition-all">
                     <i class="fa-brands fa-instagram text-sm"></i>
                 </a>
                 <a href="https://www.tiktok.com/@parfum.artgt?_r=1&_t=ZS-97wlcbRbOyt" target="_blank" rel="noopener"
-                   class="hidden sm:flex w-9 h-9 rounded-full border border-gris-300 items-center justify-center text-gris-700 hover:bg-gris-900 hover:text-white hover:border-gris-900 transition-all">
+                   class="hidden sm:flex w-9 h-9 rounded-full border border-gris-300 items-center justify-center text-gris-700 hover:bg-acento-500 hover:text-white hover:border-acento-500 transition-all">
                     <i class="fa-brands fa-tiktok text-sm"></i>
                 </a>
                 <a href="https://www.facebook.com/share/17zLxiZtcX/" target="_blank" rel="noopener"
-                   class="hidden sm:flex w-9 h-9 rounded-full border border-gris-300 items-center justify-center text-gris-700 hover:bg-gris-900 hover:text-white hover:border-gris-900 transition-all">
+                   class="hidden sm:flex w-9 h-9 rounded-full border border-gris-300 items-center justify-center text-gris-700 hover:bg-acento-500 hover:text-white hover:border-acento-500 transition-all">
                     <i class="fa-brands fa-facebook-f text-sm"></i>
                 </a>
                 <a id="headerWhatsapp" href="#" target="_blank" rel="noopener"
@@ -79,24 +95,39 @@
     </header>
 
     <!-- HERO -->
-    <section class="relative py-10 sm:py-16 px-4 sm:px-6 bg-gris-50 border-b border-gris-200">
-        <div class="max-w-4xl mx-auto text-center space-y-4">
-            <span class="text-gris-600 font-semibold tracking-[0.2em] uppercase text-xs sm:text-sm block">Perfumería &amp; Skincare</span>
-            <h2 class="font-serif text-3xl sm:text-5xl font-bold leading-tight gold-shimmer">
-                Parfum Art
+    <section class="relative py-14 sm:py-20 px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-gris-950 via-gris-900 to-gris-800">
+        <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle at 20% 15%, rgba(255,255,255,0.10) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(255,255,255,0.06) 0%, transparent 40%);"></div>
+        <div class="relative max-w-4xl mx-auto text-center space-y-4">
+            <span class="text-acento-300 font-semibold tracking-[0.25em] uppercase text-xs sm:text-sm block">Perfumería &amp; Skincare</span>
+            <h2 class="font-serif text-4xl sm:text-6xl font-bold leading-tight text-white">
+                Parfum <span class="gold-shimmer">Art</span>
             </h2>
-            <div class="w-16 h-0.5 bg-gris-900 mx-auto"></div>
-            <p class="text-base sm:text-lg text-gris-600 font-light max-w-xl mx-auto">
+            <div class="w-16 h-0.5 bg-gradient-to-r from-transparent via-acento-400 to-transparent mx-auto"></div>
+            <p class="text-base sm:text-lg text-gris-300 font-light max-w-xl mx-auto">
                 Fragancias de las firmas más deseadas y una nueva línea de cuidado de la piel, con entrega directa en toda Guatemala.
             </p>
         </div>
     </section>
 
+    <!-- CARRUSEL DE DESTACADOS -->
+    <section class="bg-gris-950 py-8 sm:py-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 mb-4 sm:mb-6 flex items-center justify-between">
+            <h3 class="font-serif text-xl sm:text-2xl font-bold text-white">Colección Destacada</h3>
+            <span class="text-gris-400 text-[11px] sm:text-xs uppercase tracking-widest">Desliza para ver más</span>
+        </div>
+        <div class="relative max-w-6xl mx-auto px-0 sm:px-6">
+            <div id="carouselTrack" class="carousel-track sm:rounded-2xl"></div>
+            <button id="carouselPrev" class="carousel-arrow left-3 sm:left-5" aria-label="Anterior"><i class="fa-solid fa-chevron-left"></i></button>
+            <button id="carouselNext" class="carousel-arrow right-3 sm:right-5" aria-label="Siguiente"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div id="carouselDots" class="flex justify-center gap-2 mt-5"></div>
+    </section>
+
     <!-- TABS DE SECCIÓN: PERFUMERÍA / SKINCARE -->
-    <div class="sticky top-[65px] sm:top-[73px] z-40 bg-white border-b border-gris-200 py-3 px-4 sm:px-6">
-        <div class="max-w-lg mx-auto flex gap-2 bg-gris-100 p-1.5 rounded-xl">
-            <button id="tabPerfumeria" type="button" class="flex-1 py-3.5 px-4 rounded-lg text-sm sm:text-base font-bold uppercase tracking-wide transition-all bg-gris-900 text-white shadow-md">Perfumería</button>
-            <button id="tabSkincare" type="button" class="flex-1 py-3.5 px-4 rounded-lg text-sm sm:text-base font-bold uppercase tracking-wide transition-all bg-transparent text-gris-500 hover:text-gris-900">Skincare</button>
+    <div class="sticky top-[89px] sm:top-[105px] z-40 bg-white/95 backdrop-blur-md border-b border-gris-200 py-3 px-4 sm:px-6">
+        <div class="max-w-lg mx-auto flex gap-1.5 bg-gris-100 p-1.5 rounded-2xl shadow-inner">
+            <button id="tabPerfumeria" type="button" class="flex-1 py-3.5 px-4 rounded-xl text-sm sm:text-base font-bold uppercase tracking-wide transition-all bg-gradient-to-br from-acento-500 to-acento-600 text-white shadow-md shadow-acento-500/30">Perfumería</button>
+            <button id="tabSkincare" type="button" class="flex-1 py-3.5 px-4 rounded-xl text-sm sm:text-base font-bold uppercase tracking-wide transition-all bg-transparent text-gris-500 hover:text-gris-900">Skincare</button>
         </div>
     </div>
 
@@ -109,12 +140,12 @@
                     id="searchInput"
                     type="text"
                     placeholder="Buscar..."
-                    class="w-full bg-white border border-gris-300 rounded-full py-3 pl-11 pr-4 text-sm text-gris-800 placeholder-gris-400 focus:border-gris-600 transition-colors"
+                    class="w-full bg-white border border-gris-300 rounded-full py-3 pl-11 pr-4 text-sm text-gris-800 placeholder-gris-400 focus:border-acento-400 focus:ring-2 focus:ring-acento-100 transition-all"
                     autocomplete="off"
                 >
             </div>
             <div class="flex gap-3">
-                <select id="groupSelect" class="w-full sm:w-auto bg-white border border-gris-300 rounded-full py-3 px-4 text-sm text-gris-800 focus:border-gris-600 transition-colors cursor-pointer"></select>
+                <select id="groupSelect" class="w-full sm:w-auto bg-white border border-gris-300 rounded-full py-3 px-4 text-sm text-gris-800 focus:border-acento-400 transition-colors cursor-pointer"></select>
             </div>
             <!-- Chips de rango de precio -->
             <div id="priceChips" class="flex flex-wrap gap-2"></div>
@@ -123,8 +154,8 @@
     </div>
 
     <!-- AVISO DE SECCIÓN DEMO (solo visible en Skincare) -->
-    <div id="skincareNotice" class="hidden bg-gris-900 text-white text-xs sm:text-sm text-center py-2.5 px-4">
-        <i class="fa-solid fa-circle-info mr-1.5"></i>
+    <div id="skincareNotice" class="hidden bg-gradient-to-r from-gris-900 via-gris-800 to-gris-900 text-acento-200 text-xs sm:text-sm text-center py-2.5 px-4 border-b border-acento-500/30">
+        <i class="fa-solid fa-circle-info mr-1.5 text-acento-400"></i>
         Esta sección muestra productos de ejemplo para definir el estilo visual. El catálogo real de Skincare llega pronto.
     </div>
 
@@ -142,20 +173,22 @@
             <i class="fa-solid fa-magnifying-glass-minus text-5xl text-gris-300 mb-4"></i>
             <h4 class="font-serif text-xl sm:text-2xl text-gris-700 mb-2">No encontramos resultados con esa búsqueda</h4>
             <p class="text-gris-500 text-sm mb-6">Intenta con otro nombre, casa o categoría.</p>
-            <button id="clearSearchBtn" class="bg-gris-900 hover:bg-gris-700 text-white font-bold px-6 py-3 rounded-full text-xs uppercase tracking-wide transition-all min-h-[44px]">Limpiar búsqueda</button>
+            <button id="clearSearchBtn" class="bg-gradient-to-br from-acento-500 to-acento-600 hover:from-acento-400 hover:to-acento-500 text-white font-bold px-6 py-3 rounded-full text-xs uppercase tracking-wide transition-all min-h-[44px] shadow-sm">Limpiar búsqueda</button>
         </div>
     </main>
 
     <!-- SECCIÓN DE CONTACTO / PIE DE PÁGINA -->
-    <footer class="bg-gris-900 text-white pt-14 pb-10 px-4 sm:px-6" id="contacto">
+    <footer class="bg-gris-950 text-white pt-14 pb-10 px-4 sm:px-6 border-t-2 border-acento-500/60" id="contacto">
         <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 mb-10 text-center sm:text-left">
             <div class="space-y-3">
-                <img src="assets/logo.png" alt="Parfum Art" class="h-10 w-auto mx-auto sm:mx-0" style="filter: invert(1);">
+                <div class="w-16 h-16 rounded-full bg-gris-100 border-2 border-gris-700 overflow-hidden mx-auto sm:mx-0">
+                    <img src="assets/logo-round.png" alt="Parfum Art" class="w-full h-full object-cover">
+                </div>
                 <p class="text-gris-400 text-sm font-light">Perfumería de lujo y skincare, con entrega directa en toda Guatemala.</p>
                 <div class="flex gap-3 justify-center sm:justify-start pt-2">
-                    <a href="https://www.instagram.com/parfumartgt?igsh=dnh2NG03aW44ejhr" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border border-gris-600 flex items-center justify-center text-gris-300 hover:bg-white hover:text-gris-900 transition-all"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@parfum.artgt?_r=1&_t=ZS-97wlcbRbOyt" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border border-gris-600 flex items-center justify-center text-gris-300 hover:bg-white hover:text-gris-900 transition-all"><i class="fa-brands fa-tiktok"></i></a>
-                    <a href="https://www.facebook.com/share/17zLxiZtcX/" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border border-gris-600 flex items-center justify-center text-gris-300 hover:bg-white hover:text-gris-900 transition-all"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/parfumartgt?igsh=dnh2NG03aW44ejhr" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border border-gris-600 flex items-center justify-center text-gris-300 hover:bg-acento-500 hover:text-white hover:border-acento-500 transition-all"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@parfum.artgt?_r=1&_t=ZS-97wlcbRbOyt" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border border-gris-600 flex items-center justify-center text-gris-300 hover:bg-acento-500 hover:text-white hover:border-acento-500 transition-all"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://www.facebook.com/share/17zLxiZtcX/" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border border-gris-600 flex items-center justify-center text-gris-300 hover:bg-acento-500 hover:text-white hover:border-acento-500 transition-all"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
             </div>
 
