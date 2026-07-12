@@ -7,9 +7,9 @@
 ::-webkit-scrollbar-track { background: #F2F2EF; }
 ::-webkit-scrollbar-thumb { background: #B8B8B2; border-radius: 4px; }
 
-/* Texto con leve realce metálico, usado con moderación en títulos grandes */
+/* Texto con brillo plateado metálico — usado solo en el nombre de marca del hero */
 .gold-shimmer {
-  background: linear-gradient(135deg, #2B2B26 0%, #5C5C54 40%, #1A1A16 70%, #2B2B26 100%);
+  background: linear-gradient(135deg, #F7F7F8 0%, #B8BCC2 30%, #FFFFFF 50%, #71767F 75%, #D7D9DC 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -36,6 +36,7 @@ input:focus-visible, select:focus-visible, a:focus-visible, button:focus-visible
   z-index: 50;
   width: 56px;
   height: 56px;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
 }
 @media (min-width: 768px) {
   .whatsapp-float { display: none; } /* en escritorio ya está el botón del header */
@@ -45,3 +46,60 @@ input:focus-visible, select:focus-visible, a:focus-visible, button:focus-visible
 .tap-target {
   min-height: 44px;
 }
+
+/* ============================================================
+   CARRUSEL DE DESTACADOS
+   Usa scroll-snap nativo del navegador: en celular el swipe
+   funciona directo, sin necesidad de JS para detectar el arrastre.
+   ============================================================ */
+.carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.carousel-track::-webkit-scrollbar { display: none; }
+
+.carousel-slide {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  position: relative;
+  height: 320px;
+  background-color: #18191B;
+}
+@media (min-width: 640px) { .carousel-slide { height: 420px; } }
+@media (min-width: 1024px) { .carousel-slide { height: 480px; } }
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1A1A16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  border: none;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.carousel-arrow:hover { background: #fff; transform: translateY(-50%) scale(1.08); }
+@media (max-width: 639px) { .carousel-arrow { display: none; } }
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #565A62;
+  transition: all .25s ease;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+.carousel-dot.active { width: 26px; background: #F7F7F8; }
