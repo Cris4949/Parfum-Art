@@ -18,6 +18,18 @@ const CONFIG = {
   },
 
   // ============================================================
+  // CATÁLOGO DE PERFUMES COMPARTIDO — Google Sheet vía Apps Script
+  // ============================================================
+  // Esta es la MISMA fuente de datos que usa Anita Perfumería (el mismo
+  // inventario, visto desde dos sitios). Pega aquí la URL que termina en
+  // /exec cuando publiques el Apps Script. Mientras esté vacía, o si el
+  // fetch falla por cualquier razón (sin internet, hoja caída, etc.), el
+  // sitio usa automáticamente la copia local de respaldo en
+  // perfumes-data.js — así nunca se rompe la página, aunque esa copia
+  // pueda tener precios desactualizados.
+  urlProductosAPI: "https://script.google.com/macros/s/AKfycbxpvtdduh5bt8EwERI5t9cegc_F2-f3_nZZ5Qaf8dwaCg_AZwxe6GTT0EVTQ4goRJKK/exec",
+
+  // ============================================================
   // REGISTRO DE CLICKS EN "PEDIR" → Google Sheet (Apps Script)
   // ============================================================
   // Esta es una hoja de cálculo NUEVA, separada por completo de la de
