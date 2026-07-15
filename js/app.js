@@ -181,19 +181,32 @@ function getFilteredSorted() {
     return camposBusqueda.some(campo => normalizar(campo).includes(q));
   });
 
-  // Orden alfabético por nombre: mucho más fácil de escanear que el
-  // orden en que se fueron agregando los productos al catálogo.
-  lista = [...lista].sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
+  // Orden: ofertas primero (para que resalten), luego lo normal, y los
+  // productos sin stock siempre al final — sin importar el filtro activo.
+  // Dentro de cada grupo, orden alfabético para que sea fácil de escanear.
+  function prioridad(p) {
+    if (p.agotado) return 2;
+    if (p.oferta) return 0;
+    return 1;
+  }
+  lista = [...lista].sort((a, b) => {
+    const diff = prioridad(a) - prioridad(b);
+    if (diff !== 0) return diff;
+    return a.nombre.localeCompare(b.nombre, "es");
+  });
   return lista;
 }
 
 function buildCardPerfume(p, index) {
   const card = document.createElement("div");
   const agotado = p.agotado === true;
-  card.className = "card-enter group relative bg-white rounded-2xl border overflow-hidden shadow-sm transition-all duration-300 flex flex-col justify-between " +
+  const enOferta = p.oferta === true && !agotado;
+  card.className = "card-enter group relative bg-white rounded-2xl border-2 overflow-hidden shadow-sm transition-all duration-300 flex flex-col justify-between " +
     (agotado
       ? "border-gris-200"
-      : "border-gris-200 hover:border-acento-300 hover:shadow-xl hover:shadow-acento-500/10 hover:-translate-y-1");
+      : enOferta
+        ? "border-red-200 hover:border-red-400 hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-1"
+        : "border-gris-200 hover:border-acento-300 hover:shadow-xl hover:shadow-acento-500/10 hover:-translate-y-1");
   card.style.animationDelay = (index * 30) + "ms";
 
   const mensaje = `Hola Parfum Art, me interesa adquirir el perfume "${p.nombre}" con el precio de ${fmtQ(p.precio)}. ¿Tienen disponibilidad para coordinar la entrega?`;
@@ -206,7 +219,7 @@ function buildCardPerfume(p, index) {
   } else if (p.oferta && p.precioOriginal) {
     bloquePrecio = `
       <span class="text-xs text-gris-400 line-through block">${fmtQ(p.precioOriginal)}</span>
-      <span class="text-xl sm:text-2xl font-serif font-bold text-acento-600">${fmtQ(p.precio)}</span>
+      <span class="text-xl sm:text-2xl font-serif font-bold text-red-600">${fmtQ(p.precio)}</span>
     `;
   } else {
     bloquePrecio = `<span class="text-xl sm:text-2xl font-serif font-bold text-acento-600">${fmtQ(p.precio)}</span>`;
@@ -228,7 +241,7 @@ function buildCardPerfume(p, index) {
       <div class="absolute top-3 left-3 z-10 bg-gradient-to-br from-acento-500 to-acento-600 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold text-white shadow-sm">
         ${p.marca}
       </div>
-      ${p.oferta && !agotado ? `<div class="absolute top-3 right-3 z-10 bg-gris-900 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold text-white shadow-sm">Oferta</div>` : ""}
+      ${p.oferta && !agotado ? `<div class="absolute top-3 right-3 z-10 bg-red-600 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold text-white shadow-md shadow-red-600/40 animate-pulse">Oferta</div>` : ""}
       <div class="h-56 sm:h-64 bg-gris-50 relative flex items-center justify-center p-5 overflow-hidden border-b border-gris-200">
         <img src="${p.imagen}" alt="${p.nombre}" loading="lazy" width="300" height="300"
              class="max-h-full max-w-full object-contain transition-transform duration-500 ${agotado ? "grayscale opacity-50" : "group-hover:scale-105"}"
@@ -406,7 +419,8 @@ function buildCarousel() {
         <p class="text-gris-300 text-sm mt-1.5 max-w-md hidden sm:block font-light">${p.aroma}</p>
         <div class="flex items-center gap-3 mt-4 sm:mt-5">
           ${p.oferta && p.precioOriginal ? `<span class="text-sm text-gris-400 line-through">${fmtQ(p.precioOriginal)}</span>` : ""}
-          <span class="text-xl sm:text-2xl font-serif font-bold text-white">${fmtQ(p.precio)}</span>
+          <span class="text-xl sm:text-2xl font-serif font-bold ${p.oferta && p.precioOriginal ? "text-red-500" : "text-white"}">${fmtQ(p.precio)}</span>
+          ${p.oferta && !p.agotado ? `<span class="bg-red-600 text-white text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full animate-pulse">Oferta</span>` : ""}
           <a href="${whatsappLink(mensaje)}" target="_blank" rel="noopener" data-carousel-pedir="${p.id}"
              class="bg-white text-gris-900 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide hover:bg-gris-100 transition-all min-h-[40px] flex items-center">
             Pedir
