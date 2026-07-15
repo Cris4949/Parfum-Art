@@ -94,6 +94,12 @@
         </div>
     </header>
 
+    <!-- AVISO: la API en línea falló y se está usando la copia local de respaldo -->
+    <div id="apiFallbackNotice" class="hidden bg-gris-700 text-white text-xs sm:text-sm text-center py-2.5 px-4">
+        <i class="fa-solid fa-triangle-exclamation mr-1.5"></i>
+        No pudimos conectar con el catálogo en línea. Mostrando una copia local — los precios y el stock podrían no estar al día.
+    </div>
+
     <!-- HERO -->
     <section class="relative py-14 sm:py-20 px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-gris-950 via-gris-900 to-gris-800">
         <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle at 20% 15%, rgba(255,255,255,0.10) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(255,255,255,0.06) 0%, transparent 40%);"></div>
@@ -166,7 +172,12 @@
             <p id="gridSubtitle" class="text-gris-500 mt-2 max-w-lg text-sm sm:text-base"></p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-8" id="catalogGrid"></div>
+        <div id="catalogLoading" class="flex flex-col items-center text-center py-16 sm:py-20">
+            <i class="fa-solid fa-circle-notch fa-spin text-4xl text-acento-400 mb-4"></i>
+            <p class="text-gris-500 text-sm">Cargando catálogo...</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-8 hidden" id="catalogGrid"></div>
 
         <!-- Estado vacío -->
         <div id="emptyState" class="hidden flex-col items-center text-center py-16 sm:py-20">
