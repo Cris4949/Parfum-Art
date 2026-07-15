@@ -1,5 +1,14 @@
+// ============================================================
 // Catálogo de Perfumería — Parfum Art
-const PERFUMES = [
+// ⚠️ ESTO YA NO ES LA FUENTE PRINCIPAL DE DATOS.
+// Desde que se conectó la API compartida con Anita Perfumería
+// (Google Sheet + Apps Script, ver js/config.js), los perfumes se
+// cargan en línea. Este archivo solo se usa como RESPALDO si ese
+// fetch falla — por eso puede tener precios desactualizados o no
+// incluir los productos más nuevos. No hace falta editarlo a mano
+// salvo que quieras mejorar la copia de emergencia.
+// ============================================================
+const PERFUMES_RESPALDO = [
   {
     "id": 1,
     "nombre": "Odyssey Mandarin Sky",

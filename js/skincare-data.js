@@ -1,70 +1,131 @@
 // ============================================================
 // Catálogo de Skincare — Parfum Art
-// ⚠️ CONTENIDO DE MUESTRA: estos 6 productos son solo un demo visual
-// para aprobar el estilo de la sección. Reemplázalos por los productos
-// reales (con fotos, precios y descripciones) cuando los tengas listos.
-// Cada producto tiene "muestra: true" — eso es lo que activa la etiqueta
-// "MUESTRA" y desactiva el botón de pedido en la tarjeta.
+// Línea de skincare coreano. Productos reales confirmados por la marca.
+// Las fotos oficiales están pendientes de agregar: mientras tanto se
+// muestra un ícono de referencia, pero el pedido por WhatsApp ya
+// funciona con normalidad porque los productos y precios son reales.
+// Para agregar la foto real de un producto, solo reemplaza su campo
+// "imagen" (ej. "images/skincare/1.jpg") una vez tengas el archivo.
 // ============================================================
 const SKINCARE = [
   {
     id: 1,
-    nombre: "Limpiador Facial Espuma Suave",
-    categoria: "Limpieza",
-    precio: 120,
-    descripcion: "Limpiador en espuma con glicerina y manzanilla. Retira impurezas y maquillaje sin resecar la piel.",
-    tamano: "150 ml",
-    icono: "fa-pump-soap",
-    muestra: true
+    nombre: "Centella Light Cleansing Oil",
+    marca: "SKIN1004",
+    precio: 220,
+    descripcion: "Aceite limpiador facial con extracto de centella asiática. Disuelve maquillaje e impurezas sin resecar la piel.",
+    tamano: "200 ml",
+    icono: "fa-droplet",
+    imagen: null
   },
   {
     id: 2,
-    nombre: "Sérum Vitamina C Luminosidad",
-    categoria: "Tratamiento",
-    precio: 185,
-    descripcion: "Sérum concentrado con vitamina C y ácido hialurónico. Unifica el tono y aporta luminosidad.",
-    tamano: "30 ml",
-    icono: "fa-vial",
-    muestra: true
+    nombre: "Ampoule Foam",
+    marca: "SKIN1004",
+    precio: 195,
+    descripcion: "Limpiador en espuma enriquecido con ampolleta de centella, para una limpieza suave y calmante.",
+    tamano: "125 ml",
+    icono: "fa-pump-soap",
+    imagen: null
   },
   {
     id: 3,
-    nombre: "Protector Solar Facial FPS 50",
-    categoria: "Protección Solar",
-    precio: 150,
-    descripcion: "Protección de amplio espectro con textura ligera, no grasa. Ideal para uso diario bajo maquillaje.",
-    tamano: "50 ml",
-    icono: "fa-sun",
-    muestra: true
+    nombre: "Poremizing Clear Toner",
+    marca: "SKIN1004",
+    precio: 215,
+    descripcion: "Tónico clarificante que minimiza la apariencia de los poros y equilibra la piel.",
+    tamano: "210 ml",
+    icono: "fa-flask",
+    imagen: null
   },
   {
     id: 4,
-    nombre: "Crema Hidratante Día y Noche",
-    categoria: "Hidratación",
-    precio: 140,
-    descripcion: "Hidratación profunda por 24 horas con ácido hialurónico y manteca de karité.",
-    tamano: "50 ml",
-    icono: "fa-droplet",
-    muestra: true
+    nombre: "Poremizing Light Gel Cream",
+    marca: "SKIN1004",
+    precio: 215,
+    descripcion: "Crema en gel ligera que hidrata sin obstruir los poros, ideal para piel mixta a grasa.",
+    tamano: "75 ml",
+    icono: "fa-spa",
+    imagen: null
   },
   {
     id: 5,
-    nombre: "Tónico Facial Equilibrante",
-    categoria: "Limpieza",
-    precio: 95,
-    descripcion: "Tónico sin alcohol que equilibra el pH de la piel y prepara el rostro para el tratamiento.",
-    tamano: "200 ml",
-    icono: "fa-flask",
-    muestra: true
+    nombre: "Niacinamide 10% Boosting Shot",
+    marca: "SKIN1004",
+    precio: 215,
+    descripcion: "Sérum concentrado con 10% de niacinamida para unificar el tono y controlar el brillo.",
+    tamano: "30 ml",
+    icono: "fa-syringe",
+    imagen: null
   },
   {
     id: 6,
-    nombre: "Mascarilla de Arcilla Purificante",
-    categoria: "Tratamiento",
-    precio: 110,
-    descripcion: "Arcilla natural que absorbe el exceso de grasa y minimiza la apariencia de los poros.",
-    tamano: "100 g",
-    icono: "fa-mortar-pestle",
-    muestra: true
+    nombre: "Hyalu-Cica Sun Serum",
+    marca: "SKIN1004",
+    precio: 295,
+    descripcion: "Protector solar en sérum con ácido hialurónico y centella. Hidrata mientras protege del sol.",
+    tamano: "100 ml",
+    icono: "fa-sun",
+    imagen: null
+  },
+  {
+    id: 7,
+    nombre: "Soon Jung Relief Toner",
+    marca: "ETUDE",
+    precio: 185,
+    descripcion: "Tónico calmante de la línea Soon Jung, formulado para pieles sensibles.",
+    tamano: "200 ml",
+    icono: "fa-flask",
+    imagen: null
+  },
+  {
+    id: 8,
+    nombre: "Soonjung 2x Barrier Cream",
+    marca: "ETUDE",
+    precio: 200,
+    descripcion: "Crema que refuerza la barrera cutánea y calma el enrojecimiento.",
+    tamano: "60 ml",
+    icono: "fa-shield-halved",
+    imagen: null
+  },
+  {
+    id: 9,
+    nombre: "Sunprise Mild Airy Finish Sun Milk",
+    marca: "ETUDE",
+    precio: 205,
+    descripcion: "Protector solar de acabado ligero y natural, no deja rastro blanco.",
+    tamano: null,
+    icono: "fa-sun",
+    imagen: null
+  },
+  {
+    id: 10,
+    nombre: "Líquido Ácido Salicílico 2%",
+    marca: "COS DE BAHA",
+    precio: 200,
+    descripcion: "Exfoliante químico para piel con tendencia acneica y poros obstruidos.",
+    tamano: null,
+    icono: "fa-vial",
+    imagen: null
+  },
+  {
+    id: 11,
+    nombre: "Suero Ácido Azelaico 10%",
+    marca: "COS DE BAHA",
+    precio: 200,
+    descripcion: "Sérum que ayuda a unificar el tono de la piel y calmar imperfecciones.",
+    tamano: null,
+    icono: "fa-vial",
+    imagen: null
+  },
+  {
+    id: 12,
+    nombre: "Suero de Retinol 2.5%",
+    marca: "COS DE BAHA",
+    precio: 215,
+    descripcion: "Sérum de retinol para tratamiento anti-edad y renovación celular nocturna.",
+    tamano: null,
+    icono: "fa-moon",
+    imagen: null
   }
 ];

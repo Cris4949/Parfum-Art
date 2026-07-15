@@ -24,17 +24,23 @@ const RANGOS_PRECIO = {
   ],
   skincare: [
     { id: "all", label: "Todos los precios", min: 0, max: null },
-    { id: "low", label: "Menos de Q120", min: 0, max: 119 },
-    { id: "mid", label: "Q120 - Q160", min: 120, max: 160 },
-    { id: "high", label: "Más de Q160", min: 161, max: null }
+    { id: "low", label: "Menos de Q200", min: 0, max: 199 },
+    { id: "mid", label: "Q200 - Q220", min: 200, max: 220 },
+    { id: "high", label: "Más de Q220", min: 221, max: null }
   ]
 };
 
+// PERFUMES se llena de forma asíncrona (ver cargarPerfumes más abajo).
+// Empieza vacío para que nada intente leerlo antes de tiempo.
+let PERFUMES = [];
+
 // Config por sección: de dónde saca los datos, cómo se llama el campo de
-// agrupación (marca en perfumería, categoría en skincare) y textos de UI.
+// agrupación (marca en ambas secciones) y textos de UI. "getDatos" es una
+// función (no un arreglo fijo) porque PERFUMES se reemplaza después de la
+// llamada a la API — así siempre lee el valor más reciente.
 const SECCIONES = {
   perfumeria: {
-    datos: PERFUMES,
+    getDatos: () => PERFUMES,
     campoGrupo: "marca",
     etiquetaGrupo: "casa",
     labelSelectTodos: "Todas las casas",
@@ -43,18 +49,65 @@ const SECCIONES = {
     subtituloGrid: "Haz clic en el botón de WhatsApp para pedir tu perfume favorito de inmediato."
   },
   skincare: {
-    datos: SKINCARE,
-    campoGrupo: "categoria",
-    etiquetaGrupo: "tipo",
-    labelSelectTodos: "Todos los tipos",
-    placeholderBusqueda: "Buscar por nombre o tipo de producto (ej. sérum, limpiador)...",
-    tituloGrid: "Skincare — Próximamente",
-    subtituloGrid: "Estos productos son una muestra de estilo. Muy pronto tendremos el catálogo completo con fotos y disponibilidad real."
+    getDatos: () => SKINCARE,
+    campoGrupo: "marca",
+    etiquetaGrupo: "marca",
+    labelSelectTodos: "Todas las marcas",
+    placeholderBusqueda: "Buscar por nombre o marca (ej. sérum, SKIN1004, ETUDE)...",
+    tituloGrid: "Skincare Coreano",
+    subtituloGrid: "Una nueva línea de skincare coreano para el cuidado de tu piel."
   }
 };
 
 let seccionActiva = "perfumeria";
 let rangoActivo = "all";
+
+// ============================================================
+// CARGA DE PERFUMES — API compartida (Google Sheet + Apps Script)
+// ============================================================
+// Rellena cualquier campo que falte con un valor por defecto seguro.
+// Así, tanto si el producto viene de la API (formato nuevo, con oferta/
+// agotado) como si viene del respaldo local (formato viejo, sin esos
+// campos), el resto del código siempre puede confiar en que existen.
+function normalizarProducto(p) {
+  return {
+    id: p.id,
+    nombre: p.nombre,
+    marca: p.marca,
+    precio: p.precio,
+    precioOriginal: p.precioOriginal ?? null,
+    oferta: p.oferta === true,
+    aroma: p.aroma || "",
+    duracion: p.duracion || "",
+    ml: p.ml || "",
+    imagen: p.imagen,
+    agotado: p.agotado === true
+  };
+}
+
+async function cargarPerfumes() {
+  if (CONFIG.urlProductosAPI) {
+    try {
+      const res = await fetch(CONFIG.urlProductosAPI);
+      if (!res.ok) throw new Error("La API respondió con estado " + res.status);
+      const datos = await res.json();
+      if (!Array.isArray(datos) || datos.length === 0) throw new Error("La API devolvió una lista vacía");
+      PERFUMES = datos.map(normalizarProducto);
+      return;
+    } catch (err) {
+      console.warn("[Parfum Art] No se pudo cargar el catálogo en línea, usando respaldo local:", err);
+      mostrarAvisoRespaldo();
+    }
+  }
+  // Sin URL configurada todavía, o el fetch falló: usa la copia local
+  // para que el sitio nunca se quede sin mostrar nada.
+  PERFUMES = PERFUMES_RESPALDO.map(normalizarProducto);
+}
+
+function mostrarAvisoRespaldo() {
+  const aviso = document.getElementById("apiFallbackNotice");
+  if (aviso) aviso.classList.remove("hidden");
+}
 
 // Referencias DOM
 const grid = document.getElementById("catalogGrid");
@@ -71,7 +124,8 @@ const tabSkincare = document.getElementById("tabSkincare");
 const skincareNotice = document.getElementById("skincareNotice");
 
 function populateGroupFilter() {
-  const { datos, campoGrupo, labelSelectTodos } = SECCIONES[seccionActiva];
+  const { campoGrupo, labelSelectTodos } = SECCIONES[seccionActiva];
+  const datos = SECCIONES[seccionActiva].getDatos();
   const grupos = [...new Set(datos.map(p => p[campoGrupo]))].sort((a, b) => a.localeCompare(b, "es"));
   groupSelect.innerHTML = "";
   const optAll = document.createElement("option");
@@ -110,7 +164,8 @@ function estiloChip(activo) {
 }
 
 function getFilteredSorted() {
-  const { datos, campoGrupo } = SECCIONES[seccionActiva];
+  const { campoGrupo } = SECCIONES[seccionActiva];
+  const datos = SECCIONES[seccionActiva].getDatos();
   const q = normalizar(searchInput.value.trim());
   const grupoSeleccionado = groupSelect.value;
   const rango = RANGOS_PRECIO[seccionActiva].find(r => r.id === rangoActivo);
@@ -122,7 +177,7 @@ function getFilteredSorted() {
     if (!q) return true;
     const camposBusqueda = seccionActiva === "perfumeria"
       ? [p.nombre, p.marca, p.aroma]
-      : [p.nombre, p.categoria, p.descripcion];
+      : [p.nombre, p.marca, p.descripcion];
     return camposBusqueda.some(campo => normalizar(campo).includes(q));
   });
 
@@ -134,21 +189,51 @@ function getFilteredSorted() {
 
 function buildCardPerfume(p, index) {
   const card = document.createElement("div");
-  card.className = "card-enter group relative bg-white rounded-2xl border border-gris-200 overflow-hidden shadow-sm transition-all duration-300 hover:border-acento-300 hover:shadow-xl hover:shadow-acento-500/10 hover:-translate-y-1 flex flex-col justify-between";
+  const agotado = p.agotado === true;
+  card.className = "card-enter group relative bg-white rounded-2xl border overflow-hidden shadow-sm transition-all duration-300 flex flex-col justify-between " +
+    (agotado
+      ? "border-gris-200"
+      : "border-gris-200 hover:border-acento-300 hover:shadow-xl hover:shadow-acento-500/10 hover:-translate-y-1");
   card.style.animationDelay = (index * 30) + "ms";
 
   const mensaje = `Hola Parfum Art, me interesa adquirir el perfume "${p.nombre}" con el precio de ${fmtQ(p.precio)}. ¿Tienen disponibilidad para coordinar la entrega?`;
   const url = whatsappLink(mensaje);
+
+  // Bloque de precio: normal, en oferta (tachado + resaltado), o sin stock.
+  let bloquePrecio;
+  if (agotado) {
+    bloquePrecio = `<span class="text-sm font-semibold text-gris-400 uppercase tracking-wide">Sin stock</span>`;
+  } else if (p.oferta && p.precioOriginal) {
+    bloquePrecio = `
+      <span class="text-xs text-gris-400 line-through block">${fmtQ(p.precioOriginal)}</span>
+      <span class="text-xl sm:text-2xl font-serif font-bold text-acento-600">${fmtQ(p.precio)}</span>
+    `;
+  } else {
+    bloquePrecio = `<span class="text-xl sm:text-2xl font-serif font-bold text-acento-600">${fmtQ(p.precio)}</span>`;
+  }
+
+  // Botón de pedido: deshabilitado y sin enlace si no hay stock.
+  const botonPedir = agotado
+    ? `<button type="button" disabled title="Sin stock por el momento"
+         class="bg-gris-100 text-gris-400 font-bold px-4 py-3 rounded-lg text-xs flex items-center gap-1.5 uppercase tracking-wide shrink-0 min-h-[44px] cursor-not-allowed">
+         <i class="fa-solid fa-ban text-sm"></i> Sin stock
+       </button>`
+    : `<a href="${url}" target="_blank" rel="noopener" data-pedir-id="${p.id}"
+         class="bg-[#25D366] hover:bg-[#1EBE57] text-white font-bold px-4 py-3 rounded-lg text-xs transition-all flex items-center gap-1.5 uppercase tracking-wide shrink-0 min-h-[44px] shadow-sm hover:shadow-md">
+         <i class="fa-brands fa-whatsapp text-sm"></i> Pedir
+       </a>`;
 
   card.innerHTML = `
     <div>
       <div class="absolute top-3 left-3 z-10 bg-gradient-to-br from-acento-500 to-acento-600 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold text-white shadow-sm">
         ${p.marca}
       </div>
+      ${p.oferta && !agotado ? `<div class="absolute top-3 right-3 z-10 bg-gris-900 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold text-white shadow-sm">Oferta</div>` : ""}
       <div class="h-56 sm:h-64 bg-gris-50 relative flex items-center justify-center p-5 overflow-hidden border-b border-gris-200">
         <img src="${p.imagen}" alt="${p.nombre}" loading="lazy" width="300" height="300"
-             class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
+             class="max-h-full max-w-full object-contain transition-transform duration-500 ${agotado ? "grayscale opacity-50" : "group-hover:scale-105"}"
              onerror="handleImageError(this)">
+        ${agotado ? `<div class="absolute inset-0 flex items-center justify-center"><span class="bg-gris-900/85 text-white text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full">Sin stock</span></div>` : ""}
       </div>
       <div class="p-5 sm:p-6 space-y-3">
         <h4 class="font-serif text-lg sm:text-xl font-bold text-gris-900 leading-snug">
@@ -163,13 +248,10 @@ function buildCardPerfume(p, index) {
     </div>
     <div class="px-5 sm:px-6 pb-5 sm:pb-6 pt-2 border-t border-gris-200 flex items-center justify-between gap-3">
       <div>
-        <span class="text-xs text-gris-500 uppercase block tracking-wider">Precio</span>
-        <span class="text-xl sm:text-2xl font-serif font-bold text-acento-600">${fmtQ(p.precio)}</span>
+        <span class="text-xs text-gris-500 uppercase block tracking-wider">${agotado ? "Disponibilidad" : "Precio"}</span>
+        ${bloquePrecio}
       </div>
-      <a href="${url}" target="_blank" rel="noopener" data-pedir-id="${p.id}"
-         class="bg-[#25D366] hover:bg-[#1EBE57] text-white font-bold px-4 py-3 rounded-lg text-xs transition-all flex items-center gap-1.5 uppercase tracking-wide shrink-0 min-h-[44px] shadow-sm hover:shadow-md">
-        <i class="fa-brands fa-whatsapp text-sm"></i> Pedir
-      </a>
+      ${botonPedir}
     </div>
   `;
 
@@ -182,19 +264,21 @@ function buildCardPerfume(p, index) {
 
 function buildCardSkincare(p, index) {
   const card = document.createElement("div");
-  card.className = "card-enter group relative bg-white rounded-2xl border border-dashed border-gris-300 overflow-hidden shadow-sm transition-all duration-300 hover:border-acento-400 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between";
+  card.className = "card-enter group relative bg-white rounded-2xl border border-gris-200 overflow-hidden shadow-sm transition-all duration-300 hover:border-acento-300 hover:shadow-xl hover:shadow-acento-500/10 hover:-translate-y-1 flex flex-col justify-between";
   card.style.animationDelay = (index * 30) + "ms";
+
+  const mensaje = `Hola Parfum Art, me interesa adquirir el producto de skincare "${p.nombre}" (${p.marca}) con el precio de ${fmtQ(p.precio)}. ¿Tienen disponibilidad para coordinar la entrega?`;
+  const url = whatsappLink(mensaje);
+  const filaContenido = p.tamano ? `<p><strong class="font-semibold text-gris-800">Contenido:</strong> <span>${p.tamano}</span></p>` : "";
 
   card.innerHTML = `
     <div>
-      <div class="absolute top-3 left-3 z-10 bg-gris-900/90 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold text-white">
-        ${p.categoria}
+      <div class="absolute top-3 left-3 z-10 bg-gradient-to-br from-acento-500 to-acento-600 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold text-white shadow-sm">
+        ${p.marca}
       </div>
-      <div class="absolute top-3 right-3 z-10 bg-white border border-acento-400 text-acento-600 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold">
-        Muestra
-      </div>
-      <div class="h-56 sm:h-64 bg-gradient-to-br from-gris-100 to-acento-50 relative flex items-center justify-center p-5 overflow-hidden border-b border-gris-200">
+      <div class="h-56 sm:h-64 bg-gradient-to-br from-gris-100 to-gris-50 relative flex flex-col items-center justify-center p-5 overflow-hidden border-b border-gris-200 gap-2">
         <i class="fa-solid ${p.icono} text-6xl sm:text-7xl text-acento-300"></i>
+        <span class="text-[10px] uppercase tracking-widest text-gris-400 font-semibold">Foto próximamente</span>
       </div>
       <div class="p-5 sm:p-6 space-y-3">
         <h4 class="font-serif text-lg sm:text-xl font-bold text-gris-900 leading-snug">
@@ -202,25 +286,33 @@ function buildCardSkincare(p, index) {
         </h4>
         <div class="space-y-1.5 text-sm text-gris-600 font-light">
           <p>${p.descripcion}</p>
-          <p><strong class="font-semibold text-gris-800">Contenido:</strong> <span>${p.tamano}</span></p>
+          ${filaContenido}
         </div>
       </div>
     </div>
     <div class="px-5 sm:px-6 pb-5 sm:pb-6 pt-2 border-t border-gris-200 flex items-center justify-between gap-3">
       <div>
-        <span class="text-xs text-gris-500 uppercase block tracking-wider">Precio referencial</span>
+        <span class="text-xs text-gris-500 uppercase block tracking-wider">Precio</span>
         <span class="text-xl sm:text-2xl font-serif font-bold text-acento-600">${fmtQ(p.precio)}</span>
       </div>
-      <button type="button" disabled title="Producto de muestra — próximamente disponible"
-         class="bg-gris-100 text-gris-400 font-bold px-4 py-3 rounded-lg text-xs flex items-center gap-1.5 uppercase tracking-wide shrink-0 min-h-[44px] cursor-not-allowed">
-        <i class="fa-solid fa-clock text-sm"></i> Próximamente
-      </button>
+      <a href="${url}" target="_blank" rel="noopener" data-pedir-skincare="${p.id}"
+         class="bg-[#25D366] hover:bg-[#1EBE57] text-white font-bold px-4 py-3 rounded-lg text-xs transition-all flex items-center gap-1.5 uppercase tracking-wide shrink-0 min-h-[44px] shadow-sm hover:shadow-md">
+        <i class="fa-brands fa-whatsapp text-sm"></i> Pedir
+      </a>
     </div>
   `;
+
+  const boton = card.querySelector(`[data-pedir-skincare="${p.id}"]`);
+  if (boton) {
+    boton.addEventListener("click", () => registrarClickPedido(p.nombre, p.marca, p.precio, "skincare"));
+  }
   return card;
 }
 
 function renderCatalogo() {
+  const catalogLoading = document.getElementById("catalogLoading");
+  if (catalogLoading) catalogLoading.classList.add("hidden");
+
   const lista = getFilteredSorted();
   grid.innerHTML = "";
 
@@ -238,7 +330,7 @@ function renderCatalogo() {
     });
   }
 
-  const total = SECCIONES[seccionActiva].datos.length;
+  const total = SECCIONES[seccionActiva].getDatos().length;
   const nombreItem = seccionActiva === "perfumeria" ? "fragancias" : "productos";
   resultsCount.textContent = lista.length === total
     ? `Mostrando los ${total} ${nombreItem} disponibles`
@@ -298,7 +390,7 @@ function buildCarousel() {
 
   const destacados = IDS_DESTACADOS
     .map(id => PERFUMES.find(p => p.id === id))
-    .filter(Boolean);
+    .filter(p => p && !p.agotado);
   if (destacados.length === 0) return;
 
   destacados.forEach((p, i) => {
@@ -312,7 +404,8 @@ function buildCarousel() {
         <span class="text-acento-300 text-xs uppercase tracking-widest font-semibold">${p.marca}</span>
         <h4 class="font-serif text-2xl sm:text-4xl font-bold text-white mt-1 leading-tight">${p.nombre}</h4>
         <p class="text-gris-300 text-sm mt-1.5 max-w-md hidden sm:block font-light">${p.aroma}</p>
-        <div class="flex items-center gap-4 mt-4 sm:mt-5">
+        <div class="flex items-center gap-3 mt-4 sm:mt-5">
+          ${p.oferta && p.precioOriginal ? `<span class="text-sm text-gris-400 line-through">${fmtQ(p.precioOriginal)}</span>` : ""}
           <span class="text-xl sm:text-2xl font-serif font-bold text-white">${fmtQ(p.precio)}</span>
           <a href="${whatsappLink(mensaje)}" target="_blank" rel="noopener" data-carousel-pedir="${p.id}"
              class="bg-white text-gris-900 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide hover:bg-gris-100 transition-all min-h-[40px] flex items-center">
@@ -404,8 +497,12 @@ tabPerfumeria.addEventListener("click", () => cambiarSeccion("perfumeria"));
 tabSkincare.addEventListener("click", () => cambiarSeccion("skincare"));
 
 // Inicialización
-actualizarUISeccion();
-populateGroupFilter();
-renderPriceChips();
-buildCarousel();
-window.onload = renderCatalogo;
+async function iniciarApp() {
+  await cargarPerfumes();
+  actualizarUISeccion();
+  populateGroupFilter();
+  renderPriceChips();
+  buildCarousel();
+  renderCatalogo();
+}
+iniciarApp();
